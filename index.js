@@ -1,4 +1,8 @@
 import app from "./server.js"
+import http from "http"
+import https from "https"
+import fs from "fs"
+
 import UdpechoDAO from "./dao/udpechoDAO.js"
 import dgram from 'node:dgram'
 import moment from 'moment-timezone'
@@ -59,16 +63,25 @@ server.on('listening', () => {
 server.bind(5683)
 
 //Express setup
-const port = process.env.PORT || 8000
+const HTTP_PORT = process.env.PORT || 8000
+const HTTPS_PORT = process.env.PORT || 8001
+const options = {
+  key: fs.readFileSync("key.pem"),
+  cert: fs.readFileSync("cert.pem"),
+  requestCert: false,
+  rejectUnauthorized: false
+};
 
-app.listen(port, () => {
-  console.log(`listening on port ${port}`)
-})
-
-
-/* example codes */
-
-// server.send(message, 41234, 'localhost', (err) => {
-//   client.close();
+// app.listen(port, () => {
+//   console.log(`listening on port ${port}`)
 // })
+// Create an HTTP server.
+http.createServer(app).listen(HTTP_PORT, () => {
+  console.log(`http listening on port ${HTTP_PORT}`)
+});
+
+// Create an HTTPS server.
+https.createServer(options, app).listen(HTTPS_PORT, () => {
+  console.log(`https listening on port ${HTTPS_PORT}`)
+});
 
