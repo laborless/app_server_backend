@@ -62,6 +62,132 @@ export default class UdpechoDAO {
     }
 	}
 
+  static async getLatestMessages() {
+    try {
+      return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database('./db/udpecho.db', sqlite3.OPEN_READWRITE, (err) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          } 
+        })
+
+        db.all('SELECT * FROM messages ORDER BY rowid DESC LIMIT 10', (err, rows) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          }
+          resolve(rows)
+        })
+        db.close()
+      })
+    } catch (e) {
+      console.error(`Unable to get messages: ${e}`)
+      return { error: e }
+    }
+	}
+
+  static async getPage(num) {
+    try {
+      return new Promise((resolve, reject) => {
+        const rowStart = num * 10
+        const db = new sqlite3.Database('./db/udpecho.db', sqlite3.OPEN_READWRITE, (err) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          } 
+        })
+
+        db.all(`SELECT * FROM messages ORDER BY rowid DESC LIMIT ${rowStart}, 10`, (err, rows) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          }
+          resolve(rows)
+        })
+        db.close()
+      })
+    } catch (e) {
+      console.error(`Unable to get messages: ${e}`)
+      return { error: e }
+    }
+	}
+
+  static async getIds() {
+    try {
+      return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database('./db/udpecho.db', sqlite3.OPEN_READWRITE, (err) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          } 
+        })
+
+        db.all('SELECT id FROM messages', (err, rows) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          }
+          resolve(rows)
+        })
+        db.close()
+      })
+    } catch (e) {
+      console.error(`Unable to get messages: ${e}`)
+      return { error: e }
+    }
+	}
+
+  static async getCount() {
+    try {
+      return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database('./db/udpecho.db', sqlite3.OPEN_READWRITE, (err) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          } 
+        })
+
+        db.all('SELECT COUNT(*) FROM messages', (err, rows) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          }
+          resolve(rows)
+        })
+        db.close()
+      })
+    } catch (e) {
+      console.error(`Unable to get messages: ${e}`)
+      return { error: e }
+    }
+	}
+
+  static async getMessage(id) {
+    try {
+      return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database('./db/udpecho.db', sqlite3.OPEN_READWRITE, (err) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          } 
+        })
+
+        db.all(`SELECT * FROM messages WHERE id = ${id}`, (err, rows) => {
+          if (err) {
+            console.error(err.message)
+            reject({ error: err })
+          }
+          resolve(rows)
+        })
+        db.close()
+      })
+    } catch (e) {
+      console.error(`Unable to get messages: ${e}`)
+      return { error: e }
+    }
+	}  
+
 	static addMessage(type, time, address, port, msg) {
 		const db = new sqlite3.Database('./db/udpecho.db', sqlite3.OPEN_READWRITE, (err) => {
 			if (err) {
