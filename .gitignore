@@ -1,5 +1,6 @@
 /node_modules
 /db
-./cert.pem
-./csr.pem
-./key.pem
+cert.pem
+csr.pem
+key.pem
+
