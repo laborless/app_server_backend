@@ -1,1 +1,1 @@
-LD_LIBRARY_PATH=/usr/local/lib64/ node index.js
+LD_LIBRARY_PATH=/usr/local/lib64/ nodemon index.js

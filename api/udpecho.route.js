@@ -3,9 +3,11 @@ import UdpechoCtrl from "./udpecho.controller.js"
 
 const router = express.Router()
 
-// router.route("/db").get(function(req, res){
-//   res.download("./db/udpecho.db", "udpecho.db")
-// })
+console.log('Current directory: ' + process.cwd());
+
+router.route("/db").get(function(req, res){
+  res.download("./db/udpecho.db", "udpecho.db")
+})
 router.route("/log").get(UdpechoCtrl.apiGetMessages)
 router.route("/latest").get(UdpechoCtrl.apiGetLatestMessages)
 router.route("/ids").get(UdpechoCtrl.apiGetIds)

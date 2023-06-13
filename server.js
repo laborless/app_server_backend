@@ -4,7 +4,10 @@ import udpecho from "./api/udpecho.route.js"
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  credentials: true,
+  origin: ['http://193.122.103.95', 'https://193.122.103.95']
+}))
 app.use(express.json())
 
 app.use("/api/v1/udpecho", udpecho)

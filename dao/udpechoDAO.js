@@ -8,7 +8,7 @@ export default class UdpechoDAO {
 			}
 		})
 
-    db.run('CREATE TABLE messages(id integer primary key, time text not null, type text not null, address text not null, port text not null, payload blob)', (err) => {
+    db.run('CREATE TABLE messages(id integer primary key, time text not null, type text not null, address text not null, port text not null, payload blob, payload_len integer not null)', (err) => {
       if (err) {
         console.error(err.message)
       }
@@ -98,6 +98,7 @@ export default class UdpechoDAO {
           } 
         })
 
+        // db.all(`SELECT * FROM messages ORDER BY rowid DESC LIMIT ${rowStart}, 10`, (err, rows) => {
         db.all(`SELECT * FROM messages ORDER BY rowid DESC LIMIT ${rowStart}, 10`, (err, rows) => {
           if (err) {
             console.error(err.message)
@@ -188,7 +189,7 @@ export default class UdpechoDAO {
     }
 	}  
 
-	static addMessage(type, time, address, port, msg) {
+	static addMessage(type, time, address, port, msg, size) {
 		const db = new sqlite3.Database('./db/udpecho.db', sqlite3.OPEN_READWRITE, (err) => {
 			if (err) {
 				console.error(err.message)
@@ -196,7 +197,7 @@ export default class UdpechoDAO {
 			} 
 		})
 
-    db.run(`INSERT INTO messages(type, time, address, port, payload) VALUES('${type}','${time}','${address}','${port}','${msg}')`, (err) => {
+    db.run(`INSERT INTO messages(type, time, address, port, payload, payload_len) VALUES('${type}','${time}','${address}','${port}','${msg}','${size}')`, (err) => {
       if (err) {
         console.error(err.message)
       }
