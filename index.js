@@ -27,10 +27,9 @@ server.on('message', (msg, rinfo) => {
   console.log(`server got: ${msg}[${rinfo.size}] from ${rinfo.address}:${rinfo.port}`)
   let timestamp = moment().tz("Europe/Rome").format('YYYY-MM-DD kk:mm:ss.SSS')
   //add to db
-  UdpechoDAO.addMessage('Rx', timestamp, rinfo.address, rinfo.port, msg, rinfo.size)
-
+  // UdpechoDAO.addMessage('Rx', timestamp, rinfo.address, rinfo.port, msg, rinfo.size)
   //to prevent xss atack
-  msg = validator.escape(msg.toString())
+  UdpechoDAO.addMessage('Rx', timestamp, rinfo.address, rinfo.port, validator.escape(msg.toString()), rinfo.size)
 
   //send echo and add to db
   if (echodelayms > 0) {
@@ -41,7 +40,7 @@ server.on('message', (msg, rinfo) => {
           } else {
             let timestamp = moment().tz("Europe/Rome").format('YYYY-MM-DD kk:mm:ss.SSS')
             console.log(`server sent: ${message}[${rinfo.size}] to ${address}:${port}`)
-            UdpechoDAO.addMessage('Tx', timestamp, address, port, message, rinfo.size)
+            UdpechoDAO.addMessage('Tx', timestamp, address, port, validator.escape(message.toString()), rinfo.size)
           }
         })
       }, echodelayms, rinfo.address, rinfo.port, msg)
@@ -52,7 +51,7 @@ server.on('message', (msg, rinfo) => {
       } else {
         timestamp = moment().tz("Europe/Rome").format('YYYY-MM-DD kk:mm:ss.SSS')
         console.log(`server sent: ${msg}[${rinfo.size}] to ${rinfo.address}:${rinfo.port}`)
-        UdpechoDAO.addMessage('Tx', timestamp, rinfo.address, rinfo.port, msg, rinfo.size)
+        UdpechoDAO.addMessage('Tx', timestamp, rinfo.address, rinfo.port, validator.escape(msg.toString()), rinfo.size)
       }
     })
   }
