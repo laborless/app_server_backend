@@ -1,7 +1,7 @@
 import app from "./server.js"
 // import http from "http"
-// import https from "https"
-// import fs from "fs"
+import https from "https"
+import fs from "fs"
 
 import UdpechoDAO from "./dao/udpechoDAO.js"
 import dgram from 'node:dgram'
@@ -158,25 +158,25 @@ tcpServer1.on('error', (err) => {
 });
 
 //Express setup
-const HTTP_PORT = process.env.PORT || 8000
-// const HTTPS_PORT = process.env.PORT || 8001
-// const options = {
-//   key: fs.readFileSync("key.pem"),
-//   cert: fs.readFileSync("cert.pem"),
+//const HTTP_PORT = process.env.PORT || 8000
+const HTTPS_PORT = process.env.PORT || 8000
+const options = {
+  key: fs.readFileSync("/etc/ssl/zerossl/private.key"),
+  cert: fs.readFileSync("/etc/ssl/zerossl/certificate.crt"),
 //   requestCert: false,
 //   rejectUnauthorized: false
-// };
+};
 
-app.listen(HTTP_PORT, () => {
-  console.log(`listening on port ${HTTP_PORT}`)
-})
+// app.listen(HTTP_PORT, () => {
+//   console.log(`listening on port ${HTTP_PORT}`)
+// })
 // Create an HTTP server.
 // http.createServer(app).listen(HTTP_PORT, () => {
 //   console.log(`http listening on port ${HTTP_PORT}`)
 // });
 
 // Create an HTTPS server.
-// https.createServer(options, app).listen(HTTPS_PORT, () => {
-//   console.log(`https listening on port ${HTTPS_PORT}`)
-// });
+https.createServer(options, app).listen(HTTPS_PORT, () => {
+  console.log(`https listening on port ${HTTPS_PORT}`)
+});
 
