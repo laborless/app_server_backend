@@ -37,7 +37,7 @@ export default class AuthController {
 				username: member.username,
 			}
 			try {
-				const accessToken = jwt.sign({ user }, "goodj_access_key", { expiresIn: '1m', issuer: 'you know nothing' })
+				const accessToken = jwt.sign({ user }, "goodj_access_key", { expiresIn: '15m', issuer: 'you know nothing' })
 				const refreshToken = jwt.sign({ user }, "goodj_refresh_key", { expiresIn: '24h', issuer: 'you know nothing' })
 				res.cookie("accessToken", accessToken);
 				res.cookie("refreshToken", refreshToken);
