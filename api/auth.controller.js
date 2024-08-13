@@ -3,15 +3,15 @@ import jwt from "jsonwebtoken"
 const members = [
 	{
 		id: 3,
-		name: "stsecurity",
-		username: "stsecurity",
-		password: "merda"
+		name: process.env.AUTH_USER1,
+		username: process.env.AUTH_USER1,
+		password: process.env.AUTH_PW1
 	},
 	{
 		id: 4,
-		name: "tyrion",
-		username: "tyrion",
-		password: "bravo"
+		name: process.env.AUTH_USER2,
+		username: process.env.AUTH_USER2,
+		password: process.env.AUTH_PW2
 	},
 ]
 

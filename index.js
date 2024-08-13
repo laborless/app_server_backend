@@ -4,6 +4,7 @@ import https from "https"
 import fs from "fs"
 
 import UdpechoDAO from "./dao/udpechoDAO.js"
+import TcpechoDAO from "./dao/tcpechoDAO.js"
 import dgram from 'node:dgram'
 import moment from 'moment-timezone'
 import validator from 'validator'
@@ -16,6 +17,7 @@ let echodelayms = 0
 
 //SQLite3 DB Setup
 UdpechoDAO.createTable()
+TcpechoDAO.createTable()
 //debug
 //UdpechoDAO.printMessages()
 
@@ -99,7 +101,7 @@ const tcpServer = net.createServer((socket) => {
   socket.on('data', (data) => {
     console.log(`Tserver got: ${data}[${data.length}] from ${remoteAddress}:${remotePort}`)
     let timestamp = moment().tz("Europe/Rome").format('YYYY-MM-DD kk:mm:ss.SSS')
-    UdpechoDAO.addMessage('Rx', timestamp, remoteAddress, remotePort, validator.escape(data.toString()), data.length)
+    TcpechoDAO.addMessage('Rx', timestamp, remoteAddress, remotePort, validator.escape(data.toString()), data.length)
 
     socket.write(data, (err) => {
       if (err) {
@@ -107,7 +109,7 @@ const tcpServer = net.createServer((socket) => {
       } else {
         timestamp = moment().tz("Europe/Rome").format('YYYY-MM-DD kk:mm:ss.SSS')
         console.log(`Tserver sent: ${data}[${data.length}] to ${remoteAddress}:${remotePort}`)
-        UdpechoDAO.addMessage('Tx', timestamp, remoteAddress, remotePort, validator.escape(data.toString()), data.length)
+        TcpechoDAO.addMessage('Tx', timestamp, remoteAddress, remotePort, validator.escape(data.toString()), data.length)
       }
     })
   });
@@ -139,7 +141,7 @@ const tcpServer1 = net.createServer((socket) => {
   socket.on('data', (data) => {
     console.log(`Tserver got: ${data}[${data.length}] from ${remoteAddress}:${remotePort}`)
     let timestamp = moment().tz("Europe/Rome").format('YYYY-MM-DD kk:mm:ss.SSS')
-    UdpechoDAO.addMessage('Rx', timestamp, remoteAddress, remotePort, validator.escape(data.toString()), data.length)
+    TcpechoDAO.addMessage('Rx', timestamp, remoteAddress, remotePort, validator.escape(data.toString()), data.length)
   });
 
   socket.on('end', () => {
