@@ -2,6 +2,7 @@ import app from "./server.js"
 // import http from "http"
 import https from "https"
 import fs from "fs"
+import coap from "coap"
 
 import UdpechoDAO from "./dao/udpechoDAO.js"
 import TcpechoDAO from "./dao/tcpechoDAO.js"
@@ -157,6 +158,100 @@ tcpServer1.listen(3001, () => {
 });
 tcpServer1.on('error', (err) => {
   console.log(`TCP Server1 Error:${err}`);
+});
+
+//Coap Server
+const serverCoap = coap.createServer();
+let coap_content = 'This is test resouce for REST API'
+serverCoap.on('request', (req, res) => {
+  let resp_code
+  let resp_msg
+  console.log('req.url:',req.url);
+  if (req.url === '/test') {
+
+    // req.payload is already a Buffer
+    console.log('Received binary data of length:', req.payload.length);
+
+    // You can access individual bytes
+    console.log('First byte:', req.payload[0]);
+
+    // Or slice the buffer
+    const firstTenBytes = req.payload.slice(0, 10);
+    console.log('First ten bytes:', firstTenBytes);
+
+    // If you need to convert to a hex string
+    const hexString = req.payload.toString('hex');
+    console.log('Data as hex string:', hexString);
+
+    // If you need to convert to a base64 string
+    const base64String = req.payload.toString('base64');
+    console.log('Data as base64 string:', base64String);
+
+    //const allOptions = req.getOptions();
+    //for (const [name, values] of Object.entries(allOptions)) {
+    //  console.log(`${name}:`, values);
+    //}
+
+    // Here Save Request into db
+	console.log('reqmethod:',req.method);
+
+    if (req.method === 'GET') {
+      if (coap_content !== null) {
+        resp_code = '2.05';  //Content
+        resp_msg = coap_content + req.payload; // to check in case of binary
+      } else {
+        resp_code = '4.04';  //Not Found
+        resp_msg = 'Not Found'
+      }
+    } else if (req.method === 'POST') {
+      if (coap_content === null) {
+        coap_content = req.payload
+        resp_code = '2.01';  //Created
+        resp_msg = coap_content;
+      } else {
+        resp_code = '4.05';  //Not Allowed
+        resp_msg = 'Not Allowed'
+      }      
+    } else if (req.method === 'PUT') {
+      if (coap_content !== null) {
+        coap_content = req.payload
+        resp_code = '2.04';  //Changed
+        resp_msg = coap_content;
+      } else {
+        resp_code = '4.04';  //Not Found
+        resp_msg = 'Not Found'
+      }
+    } else if (req.method === 'DELETE') {
+      if (coap_content !== null) {
+        coap_content = null
+        resp_code = '2.02';  //Deleted
+        resp_msg = '';
+      } else {
+        resp_code = '4.04';  //Not Found
+        resp_msg = 'Not Found'
+      }
+    } else {
+      resp_code = '4.05';   //Method Not Allowed
+      resp_msg = req.payload;
+    }
+  } else {
+    resp_code = '4.04'
+    resp_msg = 'Not found'
+  }
+  console.log('resp:', resp_code, resp_msg);
+  res.code = resp_code;
+  res.end(resp_msg);
+
+  console.log('Response options:');
+  //res.options.forEach(option => {
+  //  console.log(`Name: ${option.name}, Value: ${option.value}`);
+  //});
+
+  // Here Save Response into db
+  });
+
+serverCoap.listen(5683, () => {
+  console.log('CoAP server is listening');
 });
 
 //Express setup
